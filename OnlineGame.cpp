@@ -131,17 +131,17 @@ int main()
         }
         else // 如果是x被占用就重置x，是y被占用就重置y
         {
-            while(Xflag && Yflag)
-            {
-                x = rand() % n;
-                Xflag = X_Occupancy_detection(x,i,circleX);
-            }
-            while(Xflag && Yflag)
-            {
-                y = rand() % n;
-                Yflag = Y_Occupancy_detection(y,i,circleY);
-            }
-            goto Again;
+            // while(Xflag && Yflag)
+            // {
+            //     x = rand() % n;
+            //     Xflag = X_Occupancy_detection(x,i,circleX);
+            // }
+            // while(Xflag && Yflag)
+            // {
+            //     y = rand() % n;
+            //     Yflag = Y_Occupancy_detection(y,i,circleY);
+            // }
+            // goto Again;
         }
     }
     // 输出测试
@@ -164,13 +164,13 @@ int main()
             View[i][j] = '*';
     }
 
-    // //放置圆
-    // for (int i = 0; i < type; i++)
-    // {
-    //     for(int j = 0;j<8;j++)
-    //         View[circleX[i]*n+2][n*(n-circleY[i])-1]='A';
-    // }
-    // cout << endl;
+    //放置圆
+    for (int i = 0; i < type; i++)
+    {
+        for(int j = 0;j<8;j++)
+            View[circleX[i]*n+1][circleY[i]*n+1]='A';
+    }
+    cout << endl;
 
     // 显示
     for (int i = 0; i < 3 * n; i++)
