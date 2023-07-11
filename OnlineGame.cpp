@@ -43,7 +43,7 @@ int nowcircle = 0;  // 当前圆圈数
 
 //     return decimal;
 // }
-bool Occupancy_detection(int x, int y, int i, int circleX[], int circleY[])
+bool Occupancy_detection(int x, int y, int circleX[], int circleY[])
 {
     for (int j = 0; j < type; j++) // 检查是否被占用
     {
@@ -85,7 +85,7 @@ int main()
         int y = rand() % n;
         bool XYflag = false;
         // 检测占用
-        XYflag = Occupancy_detection(x, y, i, circleX, circleY);
+        XYflag = Occupancy_detection(x, y, circleX, circleY);
     Again:
         if (!(XYflag)) // 当前位置没有被占用
         {
@@ -138,7 +138,7 @@ int main()
             {
                 x = rand() % n;
                 y = rand() % n;
-                XYflag = Occupancy_detection(x, y, i, circleX, circleY);
+                XYflag = Occupancy_detection(x, y, circleX, circleY);
             }
             goto Again;
         }
