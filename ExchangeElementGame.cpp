@@ -4,6 +4,7 @@ const int n = 3;
 const int type = 5; // 圆圈个数
 int nowcircle = 0;  // 当前圆圈数
 int binaryArray[n][8];
+char View[3 * n][3 * n]; // 视图
 // 核心思路：二进制数，每个数字都是不重复的。顺时针八个方向对应2进制，比如：正北，1000 0000 = 128
 
 // 不限制位置，十进制转二进制
@@ -58,8 +59,29 @@ bool Occupancy_detection(int x, int y, int circleX[], int circleY[])
     }
     return false;
 }
+void View_init()
+{
+    // 显示
+    for (int i = 0; i < 3 * n; i++)
+    {
+        if (i % 3 == 0)
+        {
+            cout << endl;
+        }
+        for (int j = 0; j < 3 * n; j++)
+        {
+            if (j % 3 == 0)
+            {
+                cout << "\t";
+            }
+            cout << View[i][j];
+        }
+        cout << endl;
+    }
+}
 int main()
 {
+    system("chcp 65001");
     srand(time(0));
     // 构造xy轴
     int circleX[type];
@@ -96,23 +118,23 @@ int main()
             {
                 if (y == 0) // 最左边不应该有指向左边的箭头
                 {
-                    binaryArray[nowcircle][5] == 0;
-                    binaryArray[nowcircle][6] == 0;
-                    binaryArray[nowcircle][7] == 0;
+                    binaryArray[nowcircle][5] = 0;
+                    binaryArray[nowcircle][6] = 0;
+                    binaryArray[nowcircle][7] = 0;
                 }
                 if (y == n - 1) // 最右边不应该有指向右边的箭头
                 {
-                    binaryArray[nowcircle][1] == 0;
-                    binaryArray[nowcircle][2] == 0;
-                    binaryArray[nowcircle][3] == 0;
+                    binaryArray[nowcircle][1] = 0;
+                    binaryArray[nowcircle][2] = 0;
+                    binaryArray[nowcircle][3] = 0;
                 }
                 if (x == n - 1) // 最上
                 {
-                    binaryArray[nowcircle][0] == 0;
+                    binaryArray[nowcircle][0] = 0;
                 }
                 if (x == 0) // 最下
                 {
-                    binaryArray[nowcircle][4] == 0;
+                    binaryArray[nowcircle][4] = 0;
                 }
             }
 
@@ -126,7 +148,7 @@ int main()
                 if (binaryArray[nowcircle - 1][i1] == 1 && nowcircle != 0 && !Correct_path)
                 {
                     // 对角线为1（必须有一个元素与其对应）
-                    binaryArray[nowcircle][(i1 + 4) % 8] == 1;
+                    binaryArray[nowcircle][(i1 + 4) % 8] = 1;
                     // 有一个对应即可
                     Correct_path = true;
                 }
@@ -159,7 +181,7 @@ int main()
              << endl;
     }
     // 打表 初始化
-    char View[3 * n][3 * n]; // 视图
+
     for (int i = 0; i < 3 * n; i++)
     {
         for (int j = 0; j < 3 * n; j++)
@@ -211,23 +233,35 @@ int main()
             }
         }
     }
-    // 显示
-    for (int i = 0; i < 3 * n; i++)
+    View_init();
+
+    while (true)
     {
-        if (i % 3 == 0)
-        {
-            cout << endl;
-        }
-        for (int j = 0; j < 3 * n; j++)
-        {
-            if (j % 3 == 0)
-            {
-                cout << "\t";
-            }
-            cout << View[i][j];
-        }
+        // 交换元素
         cout << endl;
+        cout << "输出两个元素的坐标以交换,从上到下是X，从左到右是Y,如(1,1)(2,2)，不用加括号，用Enter或空格分隔:";
+        int X1, X2, Y1, Y2;
+        cin >> X1;
+        //循环直到#结束
+        if (X1 == '#')
+        {
+            break;
+        }
+        cin >> Y1 >> X2 >> Y2;
+        cout << endl;
+        // 全部交换，包括圆心（圆心相同所以没关系）
+        char temp;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                temp = View[X1 * n + i][Y1 * n + j];
+                View[X1 * n + i][Y1 * n + j] = View[X2 * n + i][Y2 * n + j];
+                View[X2 * n + i][Y2 * n + j] = temp;
+            }
+        }
+        View_init();
+        system("pause");
     }
-    system("pause");
     return 0;
 }
