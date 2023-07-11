@@ -31,36 +31,28 @@ int generateRandomDecimal(int binaryArray[][8])
     int randomDecimal = minDecimal + rand() % (maxDecimal - minDecimal + 1);
     return randomDecimal;
 }
-// 二进制转十进制
-int binaryToDecimal(int binaryArray[][8])
-{
-    int decimal = 0;
+// // 二进制转十进制
+// int binaryToDecimal(int binaryArray[][8])
+// {
+//     int decimal = 0;
 
-    for (int i = 7; i >= 0; i--)
-    {
-        decimal += binaryArray[nowcircle][i] * pow(2, 7 - i);
-    }
+//     for (int i = 7; i >= 0; i--)
+//     {
+//         decimal += binaryArray[nowcircle][i] * pow(2, 7 - i);
+//     }
 
-    return decimal;
-}
-bool X_Occupancy_detection(int x, int i, int circleX[])
+//     return decimal;
+// }
+bool Occupancy_detection(int x, int y, int i, int circleX[], int circleY[])
 {
-    for (int j = 0; j < type && j <= i; j++) // 检查X是否被占用
+    for (int j = 0; j < type; j++) // 检查是否被占用
     {
         if (x == circleX[j])
         {
-            return true;
-        }
-    }
-    return false;
-}
-bool Y_Occupancy_detection(int y, int i, int circleY[])
-{
-    for (int j = 0; j < type && j <= i; j++) // 检查Y是否被占用
-    {
-        if (y == circleY[j])
-        {
-            return true;
+            if (y == circleY[j])
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -69,8 +61,14 @@ int main()
 {
     srand(time(0));
     // 构造xy轴
-    int circleX[type] = {-1};
-    int circleY[type] = {-1};
+    int circleX[type];
+    int circleY[type];
+    // 初始化
+    for (int i = 0; i < type; i++)
+    {
+        circleX[i] = -1;
+        circleY[i] = -1;
+    }
     // 二进制位
     int binaryArray[n][8];
     // 各个圆圈的类型
@@ -85,13 +83,11 @@ int main()
         // 圆圈的位置
         int x = rand() % n;
         int y = rand() % n;
-        bool Xflag = false;
-        bool Yflag = false;
+        bool XYflag = false;
         // 检测占用
-        Xflag = X_Occupancy_detection(x, i, circleX);
-        Yflag = Y_Occupancy_detection(y, i, circleY);
+        XYflag = Occupancy_detection(x, y, i, circleX, circleY);
     Again:
-        if (!(Xflag && Yflag)) // 当前位置没有被占用
+        if (!(XYflag)) // 当前位置没有被占用
         {
             circleX[i] = x;
             circleY[i] = y;
@@ -119,34 +115,33 @@ int main()
                 }
             }
 
-            // 限制条件后重新转回十进制,方便存储
-            circletype[i] = binaryToDecimal(binaryArray);
+            // // 限制条件后重新转回十进制,方便存储
+            // circletype[i] = binaryToDecimal(binaryArray);
             // 必须存在的分支
-            //表示是否对应成功（至少一次）
+            // 表示是否对应成功（至少一次）
             bool Correct_path = false;
-            for (int i = 0; i < 8; i++)
+            for (int i1 = 0; i1 < 8; i1++)
             {
+                // 初始节点没有前继节点
+                if (i1 == 0)
+                    break;
                 if (binaryArray[nowcircle - 1][i] == 1 && nowcircle != 0 && !Correct_path)
                 {
                     // 对角线为1（必须有一个元素与其对应）
                     binaryArray[nowcircle][(i + 4) % 8] == 1;
-                    //有一个对应即可
+                    // 有一个对应即可
                     Correct_path = true;
                 }
             }
             nowcircle++;
         }
-        else // 如果是x被占用就重置x，是y被占用就重置y
+        else // 被占用就重置
         {
-            while (Xflag && Yflag)
+            while (XYflag)
             {
                 x = rand() % n;
-                Xflag = X_Occupancy_detection(x, i, circleX);
-            }
-            while (Xflag && Yflag)
-            {
                 y = rand() % n;
-                Yflag = Y_Occupancy_detection(y, i, circleY);
+                XYflag = Occupancy_detection(x, y, i, circleX, circleY);
             }
             goto Again;
         }
