@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "f:/class/BC/Try",
-      "program": "f:/class/BC/Try/build/Debug/outDebug",
+      "cwd": "f:/SelfTsukuru/github/MyCode/OnlineGame",
+      "program": "f:/SelfTsukuru/github/MyCode/OnlineGame/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

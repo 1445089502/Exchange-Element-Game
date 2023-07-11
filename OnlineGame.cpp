@@ -43,7 +43,7 @@ int binaryToDecimal(int binaryArray[][8])
 
     return decimal;
 }
-bool X_Occupancy_detection(int x,int i,int circleX[])
+bool X_Occupancy_detection(int x, int i, int circleX[])
 {
     for (int j = 0; j < type && j <= i; j++) // 检查X是否被占用
     {
@@ -51,11 +51,10 @@ bool X_Occupancy_detection(int x,int i,int circleX[])
         {
             return true;
         }
-
     }
     return false;
 }
-bool Y_Occupancy_detection(int y,int i,int circleY[])
+bool Y_Occupancy_detection(int y, int i, int circleY[])
 {
     for (int j = 0; j < type && j <= i; j++) // 检查Y是否被占用
     {
@@ -70,8 +69,8 @@ int main()
 {
     srand(time(0));
     // 构造xy轴
-    int circleX[type] = {0};
-    int circleY[type] = {0};
+    int circleX[type] = {-1};
+    int circleY[type] = {-1};
     // 二进制位
     int binaryArray[n][8];
     // 各个圆圈的类型
@@ -88,60 +87,68 @@ int main()
         int y = rand() % n;
         bool Xflag = false;
         bool Yflag = false;
-        //检测占用
-        Xflag = X_Occupancy_detection(x,i,circleX);
-        Yflag = Y_Occupancy_detection(y,i,circleY);
-        Again:
+        // 检测占用
+        Xflag = X_Occupancy_detection(x, i, circleX);
+        Yflag = Y_Occupancy_detection(y, i, circleY);
+    Again:
         if (!(Xflag && Yflag)) // 当前位置没有被占用
         {
             circleX[i] = x;
             circleY[i] = y;
-            if (y == 0) // 最左边不应该有指向左边的箭头
+            // 限制条件,剪枝
             {
-                binaryArray[nowcircle][5] == 0;
-                binaryArray[nowcircle][6] == 0;
-                binaryArray[nowcircle][7] == 0;
+                if (y == 0) // 最左边不应该有指向左边的箭头
+                {
+                    binaryArray[nowcircle][5] == 0;
+                    binaryArray[nowcircle][6] == 0;
+                    binaryArray[nowcircle][7] == 0;
+                }
+                if (y == n - 1) // 最右边不应该有指向右边的箭头
+                {
+                    binaryArray[nowcircle][1] == 0;
+                    binaryArray[nowcircle][2] == 0;
+                    binaryArray[nowcircle][3] == 0;
+                }
+                if (x == n - 1) // 最上
+                {
+                    binaryArray[nowcircle][0] == 0;
+                }
+                if (x == 0) // 最下
+                {
+                    binaryArray[nowcircle][4] == 0;
+                }
             }
-            if (y == n - 1) // 最右边不应该有指向右边的箭头
-            {
-                binaryArray[nowcircle][1] == 0;
-                binaryArray[nowcircle][2] == 0;
-                binaryArray[nowcircle][3] == 0;
-            }
-            if (x == n - 1) // 最上
-            {
-                binaryArray[nowcircle][0] == 0;
-            }
-            if (x == 0) // 最下
-            {
-                binaryArray[nowcircle][4] == 0;
-            }
+
             // 限制条件后重新转回十进制,方便存储
             circletype[i] = binaryToDecimal(binaryArray);
-            nowcircle++;
-
+            // 必须存在的分支
+            //表示是否对应成功（至少一次）
+            bool Correct_path = false;
             for (int i = 0; i < 8; i++)
             {
-                if (binaryArray[nowcircle - 1][i] == 1)
+                if (binaryArray[nowcircle - 1][i] == 1 && nowcircle != 0 && !Correct_path)
                 {
                     // 对角线为1（必须有一个元素与其对应）
                     binaryArray[nowcircle][(i + 4) % 8] == 1;
+                    //有一个对应即可
+                    Correct_path = true;
                 }
             }
+            nowcircle++;
         }
         else // 如果是x被占用就重置x，是y被占用就重置y
         {
-            // while(Xflag && Yflag)
-            // {
-            //     x = rand() % n;
-            //     Xflag = X_Occupancy_detection(x,i,circleX);
-            // }
-            // while(Xflag && Yflag)
-            // {
-            //     y = rand() % n;
-            //     Yflag = Y_Occupancy_detection(y,i,circleY);
-            // }
-            // goto Again;
+            while (Xflag && Yflag)
+            {
+                x = rand() % n;
+                Xflag = X_Occupancy_detection(x, i, circleX);
+            }
+            while (Xflag && Yflag)
+            {
+                y = rand() % n;
+                Yflag = Y_Occupancy_detection(y, i, circleY);
+            }
+            goto Again;
         }
     }
     // 输出测试
@@ -164,11 +171,11 @@ int main()
             View[i][j] = '*';
     }
 
-    //放置圆
+    // 放置圆
     for (int i = 0; i < type; i++)
     {
-        for(int j = 0;j<8;j++)
-            View[circleX[i]*n+1][circleY[i]*n+1]='A';
+        for (int j = 0; j < 8; j++)
+            View[circleX[i] * n + 1][circleY[i] * n + 1] = 'A';
     }
     cout << endl;
 
